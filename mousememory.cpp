@@ -2,31 +2,15 @@
 
 MouseMemory::MouseMemory(QObject *parent) : QObject(parent)
 {
-
+    recorder_ = new QAudioRecorder(this);
 }
 
-void MouseMemory::test()
+void MouseMemory::start()
 {
-    qDebug() << "Hello from C++";
+    qDebug() << "Start recording";
 }
 
-void MouseMemory::clear()
+void MouseMemory::stop()
 {
-    qDebug() << "Clear the data";
-}
-
-void MouseMemory::save()
-{
-    qDebug() << "Save the data";
-}
-
-void MouseMemory::add(double x, double y)
-{
-    QPoint p(x, y);
-    qDebug() << "Adding " << p;
-}
-
-void MouseMemory::add(QPointF point)
-{
-    qDebug() << "Adding Float " << point;
+    qDebug() << "Stop recording";
 }
