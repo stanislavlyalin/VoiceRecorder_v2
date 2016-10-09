@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QDebug>
 #include <QAudioRecorder>
+#include <QUrl>
+#include <QGuiApplication>
 
 class MouseMemory : public QObject
 {
