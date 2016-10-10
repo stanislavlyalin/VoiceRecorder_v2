@@ -24,6 +24,7 @@ public slots:
 
 private:
     QAudioRecorder* recorder_ = nullptr;
+    static uint32_t counter_;
 };
 
 #endif // MOUSEMEMORY_H

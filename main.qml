@@ -4,12 +4,13 @@ import QtQuick.Layouts 1.0
 
 ApplicationWindow {
   visible: true
-  width: 500
-  height: 500
+  //width: 500
+  //height: 500
   id: root
 
   Row {
     id: tools
+    anchors.centerIn: parent
 
     Button {
       id: start

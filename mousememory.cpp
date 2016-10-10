@@ -1,5 +1,7 @@
 #include "mousememory.h"
 
+uint32_t MouseMemory::counter_ = 0;
+
 MouseMemory::MouseMemory(QObject *parent) : QObject(parent)
 {
     recorder_ = new QAudioRecorder(this);
@@ -13,14 +15,14 @@ void MouseMemory::start()
     // "amr-nb", "amr-wb", "aac"
 
     QAudioEncoderSettings audioSettings;
-    audioSettings.setCodec("audio/amr-nb");
-    audioSettings.setQuality(QMultimedia::HighQuality);
+    audioSettings.setQuality(QMultimedia::VeryHighQuality);
     audioSettings.setChannelCount(1);
+    audioSettings.setEncodingMode(QMultimedia::ConstantQualityEncoding);
+    audioSettings.setSampleRate(48000);
 
     recorder_->setAudioSettings(audioSettings);
 
-    //QString file = QCoreApplication::applicationDirPath() + "/test.amr";
-    QString file = "/sdcard/test";
+    QString file = "/sdcard/test" + QString::number(++counter_);
     recorder_->setOutputLocation(QUrl::fromLocalFile(file));
     recorder_->record();
 }
