@@ -8,9 +8,19 @@ ApplicationWindow {
   //height: 500
   id: root
 
+  Text {
+    id: hint
+    anchors.centerIn: parent
+    height: parent.height
+    width: parent.width
+    font.pointSize: 36
+    wrapMode: Text.WordWrap
+    text: hint_text
+  }
+
   Row {
     id: tools
-    anchors.centerIn: parent
+    anchors.bottom: parent.bottom
 
     Button {
       id: start

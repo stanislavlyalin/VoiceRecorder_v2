@@ -1,9 +1,11 @@
 #include "mousememory.h"
+#include "phrases.h"
 
 uint32_t MouseMemory::counter_ = 0;
 
-MouseMemory::MouseMemory(QObject *parent) : QObject(parent)
+MouseMemory::MouseMemory(QQmlContext* context, QObject *parent) : QObject(parent)
 {
+    context_ = context;
     recorder_ = new QAudioRecorder(this);
 }
 
@@ -25,6 +27,9 @@ void MouseMemory::start()
     QString file = "/sdcard/test" + QString::number(++counter_);
     recorder_->setOutputLocation(QUrl::fromLocalFile(file));
     recorder_->record();
+
+    uint32_t index = rand() % phrases.size();
+    context_->setContextProperty("hint_text", phrases[index].c_str());
 }
 
 void MouseMemory::stop()
@@ -32,4 +37,5 @@ void MouseMemory::stop()
     qDebug() << "Stop recording";
 
     recorder_->stop();
+    context_->setContextProperty("hint_text", "");
 }

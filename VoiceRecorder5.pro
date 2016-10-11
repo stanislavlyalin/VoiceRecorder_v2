@@ -14,4 +14,5 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    mousememory.h
+    mousememory.h \
+    phrases.h
