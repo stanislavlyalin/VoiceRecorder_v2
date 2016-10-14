@@ -3,10 +3,22 @@
 
 uint32_t MouseMemory::counter_ = 0;
 
-MouseMemory::MouseMemory(QQmlContext* context, QObject *parent) : QObject(parent)
+const char* get_timer_string(QString filename, int32_t seconds) {
+    QString s;
+    s.sprintf("%s %02d:%02d",
+              filename.toStdString().c_str(), seconds / 60, seconds % 60);
+    return s.toStdString().c_str();
+}
+
+MouseMemory::MouseMemory(QQmlContext* context, QObject* object, QObject *parent) : QObject(parent)
 {
     context_ = context;
+
     recorder_ = new QAudioRecorder(this);
+    timer_ = new QTimer(this);
+
+    qml_record_text_ = object->findChild<QObject*>("qml_record_text");
+    qml_timer_ = object->findChild<QObject*>("qml_timer");
 }
 
 void MouseMemory::start()
@@ -28,14 +40,31 @@ void MouseMemory::start()
     recorder_->setOutputLocation(QUrl::fromLocalFile(file));
     recorder_->record();
 
+    // установка текста, который должен прочитать пользователь
     uint32_t index = rand() % phrases.size();
-    context_->setContextProperty("hint_text", phrases[index].c_str());
+    qml_record_text_->setProperty("text", phrases[index].c_str());
+
+    // отображаем и сбрасываем в начальное состояние текст таймера
+    qml_timer_->setProperty("text", get_timer_string(file, seconds_));
+    qml_timer_->setProperty("visible", "true");
+
+    connect(timer_, &QTimer::timeout, [=](){
+        ++seconds_;
+        qml_timer_->setProperty("text", get_timer_string(file, seconds_));
+    });
+    timer_->start(1000);
 }
 
 void MouseMemory::stop()
 {
     qDebug() << "Stop recording";
 
+    // выключение записи и таймера
     recorder_->stop();
-    context_->setContextProperty("hint_text", "");
+    timer_->stop();
+    seconds_ = 0;
+
+    // сброс в начальное состояние qml-компонентов
+    qml_record_text_->setProperty("text", "");
+    qml_timer_->setProperty("visible", "false");
 }

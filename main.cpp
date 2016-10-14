@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlComponent>
 
 // эти 2 строки нужны для взаимодействия QML-кода с кодом на C++
 #include <QQmlEngine>
@@ -12,14 +13,14 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    engine.load(QUrl(QLatin1String("qrc:/main.qml")));
+    QQmlComponent component(&engine, QUrl(QLatin1String("qrc:/main.qml")));
+    QObject* object = component.create();
 
     // умный указатель на класс, который мы хотим сделать доступным в QML
-    QScopedPointer<MouseMemory> mouse(new MouseMemory(engine.rootContext()));
+    QScopedPointer<MouseMemory> mouse(new MouseMemory(engine.rootContext(), object));
 
     // делаем объект mouse доступным в QML под именем "mouse"
     engine.rootContext()->setContextProperty("mouse", mouse.data());
-    engine.rootContext()->setContextProperty("hint_text", "");
 
     return app.exec();
 }
