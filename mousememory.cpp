@@ -6,10 +6,9 @@
 
 uint32_t MouseMemory::counter_ = 0;
 
-const char* get_timer_string(QString filename, int32_t seconds) {
+const char* get_timer_string(int32_t seconds) {
     QString s;
-    s.sprintf("%s %02d:%02d",
-              filename.toStdString().c_str(), seconds / 60, seconds % 60);
+    s.sprintf("%02d:%02d", seconds / 60, seconds % 60);
     return s.toStdString().c_str();
 }
 
@@ -58,12 +57,12 @@ void MouseMemory::start()
     qml_record_text_->setProperty("text", phrases[index].c_str());
 
     // отображаем и сбрасываем в начальное состояние текст таймера
-    qml_timer_->setProperty("text", get_timer_string(file, seconds_));
+    qml_timer_->setProperty("text", get_timer_string(seconds_));
     qml_timer_->setProperty("visible", "true");
 
     connect(timer_, &QTimer::timeout, [=](){
         ++seconds_;
-        qml_timer_->setProperty("text", get_timer_string(file, seconds_));
+        qml_timer_->setProperty("text", get_timer_string(seconds_));
     });
     timer_->start(1000);
 }
