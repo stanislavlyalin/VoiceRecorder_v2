@@ -1,5 +1,8 @@
 #include "mousememory.h"
 #include "phrases.h"
+#include <QDebug>
+#include <QDir>
+#include <QStandardPaths>
 
 uint32_t MouseMemory::counter_ = 0;
 
@@ -19,6 +22,15 @@ MouseMemory::MouseMemory(QQmlContext* context, QObject* object, QObject *parent)
 
     qml_record_text_ = object->findChild<QObject*>("qml_record_text");
     qml_timer_ = object->findChild<QObject*>("qml_timer");
+
+    // проверка и создание директории для сохранения аудиозаписей
+    dir_ = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation)[0] +
+            QString("/VoiceRecorder");
+
+    // если директория не существует, создадим её
+    if (!QDir(dir_).exists()) {
+        QDir().mkdir(dir_);
+    }
 }
 
 void MouseMemory::start()
@@ -36,7 +48,8 @@ void MouseMemory::start()
 
     recorder_->setAudioSettings(audioSettings);
 
-    QString file = "/sdcard/test" + QString::number(++counter_);
+    // QString file = "/sdcard/test" + QString::number(++counter_);
+    QString file = dir_ + "/test" + QString::number(++counter_);
     recorder_->setOutputLocation(QUrl::fromLocalFile(file));
     recorder_->record();
 

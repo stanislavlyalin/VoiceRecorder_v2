@@ -28,6 +28,7 @@ private:
     QAudioRecorder* recorder_ = nullptr;
     static uint32_t counter_;
     QQmlContext* context_ = nullptr;
+    QString dir_;
 
     QTimer* timer_ = nullptr;
     int32_t seconds_ = 0;
